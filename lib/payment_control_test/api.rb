@@ -1,4 +1,4 @@
-require 'time'
+require 'date'
 
 module PaymentControlTest
 
@@ -30,9 +30,9 @@ module PaymentControlTest
 
     def on_failure_call(routing_context, properties)
       puts "PaymentControlTest::PaymentControlPlugin on_failure_call : #{routing_context_to_s(routing_context)}"
-      res = ::Killbill::Plugin::Model::OnFailurePaymentRoutingResult.new
-      result.next_retry_date = property_to_str(properties, 'TEST_RETRY_FAILED_PAYMENT')
-      res
+      result = ::Killbill::Plugin::Model::OnFailurePaymentRoutingResult.new
+      result.next_retry_date = property_to_date(properties, 'TEST_RETRY_FAILED_PAYMENT')
+      result
     end
 
     private
@@ -43,7 +43,7 @@ module PaymentControlTest
 
     def property_to_str(properties, key_name)
       res = (properties || []).select { |e| e.key == key_name }
-      res[0] if res && res.length > 0
+      res[0].value if res && res.length > 0
     end
 
     def property_to_bool(properties, key_name)
@@ -56,10 +56,10 @@ module PaymentControlTest
       Float(res[0].value) if res && res.length > 0
     end
 
-    def property_to_time(properties, key_name)
+    def property_to_date(properties, key_name)
       # for e.g "2012-01-20T07:30:42.000Z"
       res = (properties || []).select { |e| e.key == key_name }
-      Time.new(res[0].value) if res && res.length > 0
+      DateTime.parse(res[0].value).iso8601(3) if res && res.length > 0
     end
 
   end
