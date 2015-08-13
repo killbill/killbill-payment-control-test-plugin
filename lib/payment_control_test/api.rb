@@ -2,7 +2,7 @@ require 'date'
 
 module PaymentControlTest
 
-  class PaymentControlPlugin < Killbill::Plugin::PaymentRoutingPluginApi
+  class PaymentControlPlugin < Killbill::Plugin::PaymentControlPluginApi
 
     def initialize
       super
@@ -10,11 +10,11 @@ module PaymentControlTest
     end
 
 
-    def prior_call(routing_context, properties)
+    def prior_call(control_context, properties)
 
-      puts "PaymentControlTest::PaymentControlPlugin prior_call : #{routing_context_to_s(routing_context)}"
+      puts "PaymentControlTest::PaymentControlPlugin prior_call : #{control_context_to_s(control_context)}"
 
-      result = ::Killbill::Plugin::Model::PriorPaymentRoutingResult.new
+      result = ::Killbill::Plugin::Model::PriorPaymentControlResult.new
       result.is_aborted = property_to_bool(properties, 'TEST_ABORT_PAYMENT')
       result.adjusted_amount = property_to_float(properties, 'TEST_ADJUSTED_AMOUNT')
       result.adjusted_currency = property_to_str(properties, 'TEST_ADJUSTED_CURRENCY')
@@ -23,21 +23,21 @@ module PaymentControlTest
       result
     end
 
-    def on_success_call(routing_context, properties)
-      puts "PaymentControlTest::PaymentControlPlugin on_success_call : #{routing_context_to_s(routing_context)}"
-      ::Killbill::Plugin::Model::OnSuccessPaymentRoutingResult.new
+    def on_success_call(control_context, properties)
+      puts "PaymentControlTest::PaymentControlPlugin on_success_call : #{control_context_to_s(control_context)}"
+      ::Killbill::Plugin::Model::OnSuccessPaymentControlResult.new
     end
 
-    def on_failure_call(routing_context, properties)
-      puts "PaymentControlTest::PaymentControlPlugin on_failure_call : #{routing_context_to_s(routing_context)}"
-      result = ::Killbill::Plugin::Model::OnFailurePaymentRoutingResult.new
+    def on_failure_call(control_context, properties)
+      puts "PaymentControlTest::PaymentControlPlugin on_failure_call : #{control_context_to_s(control_context)}"
+      result = ::Killbill::Plugin::Model::OnFailurePaymentControlResult.new
       result.next_retry_date = property_to_date(properties, 'TEST_RETRY_FAILED_PAYMENT')
       result
     end
 
     private
 
-    def routing_context_to_s(rc)
+    def control_context_to_s(rc)
       "tenant = #{rc.tenant_id}, account = #{rc.account_id}, payment_external_key = #{rc.payment_external_key}, transaction_type = #{rc.transaction_type}, amount=#{rc.amount}"
     end
 
