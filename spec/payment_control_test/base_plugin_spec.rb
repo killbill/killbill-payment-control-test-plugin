@@ -64,8 +64,6 @@ describe PaymentControlTest::PaymentControlPlugin do
 
     output = @plugin.on_failure_call(@control_context, properties)
 
-    puts "output = #{output.inspect}"
-
     output.next_retry_date.should == DateTime.parse("2012-01-20T07:30:42.000+00:00").iso8601(3)
   end
 
