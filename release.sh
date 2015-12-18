@@ -36,7 +36,7 @@ fi
 echo 'Building artifact'
 $BUNDLE rake killbill:package
 
-ARTIFACT="$PWD/pkg/killbill-payment-control-test-plugin-$VERSION.tar.gz"
+ARTIFACT="$PWD/pkg/killbill-payment-control-test-$VERSION.tar.gz"
 echo "Pushing $ARTIFACT to Maven Central"
 
 if [[ -z "$NO_RELEASE" ]]; then
